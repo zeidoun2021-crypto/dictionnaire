@@ -1,0 +1,563 @@
+html
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المعجم التقني - القسم الأول (A-F)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+        }
+
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .search-area {
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 20px;
+            font-size: 1rem;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            outline: none;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .search-input:focus {
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+
+        .main-content {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: #f8f9fa;
+            border-left: 1px solid #e9ecef;
+            overflow-y: auto;
+            padding: 15px;
+        }
+
+        .sidebar h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #dee2e6;
+            font-size: 1.1rem;
+        }
+
+        .terms-list {
+            list-style: none;
+        }
+
+        .terms-list li {
+            padding: 10px 12px;
+            margin-bottom: 5px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            color: #495057;
+        }
+
+        .terms-list li:hover {
+            background: #e9ecef;
+        }
+
+        .terms-list li.active {
+            background: #2a5298;
+            color: white;
+        }
+
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+        }
+
+        .term-card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .term-title {
+            background: linear-gradient(135deg, #2a5298 0%, #1e3c72 100%);
+            color: white;
+            padding: 20px 25px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .translations {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1px;
+            background: #dee2e6;
+        }
+
+        .trans-item {
+            background: white;
+            padding: 15px 20px;
+        }
+
+        .trans-label {
+            font-size: 0.75rem;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .trans-value {
+            font-size: 1rem;
+            color: #2c3e50;
+            font-weight: 500;
+            word-break: break-word;
+        }
+
+        .definitions {
+            padding: 20px 25px;
+            background: #f8f9fa;
+        }
+
+        .def-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            border-right: 4px solid #2a5298;
+            padding-right: 12px;
+        }
+
+        .def-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .def-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+
+        .def-lang {
+            font-size: 0.8rem;
+            color: #2a5298;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .def-text {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: #495057;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 50px;
+            color: #6c757d;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                max-height: 200px;
+                border-left: none;
+                border-top: 1px solid #e9ecef;
+            }
+            .translations {
+                grid-template-columns: 1fr;
+            }
+            .def-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📖 المعجم التقني رباعي اللغات - القسم الأول</h1>
+            <p>عربي | English | Français | 한국어 | الحروف: A - F</p>
+        </div>
+
+        <div class="search-area">
+            <div class="search-box">
+                <input type="text" id="searchInput" class="search-input" placeholder="🔍 ابحث عن مصطلح...">
+            </div>
+        </div>
+
+        <div class="main-content">
+            <div class="sidebar">
+                <h3>📌 قائمة المصطلحات (A - F)</h3>
+                <ul id="termsList" class="terms-list"></ul>
+            </div>
+            <div class="content-area" id="contentArea"></div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // القسم الأول: المصطلحات من A إلى F
+        // ============================================================
+        const termsData = [
+            {
+                id: 1,
+                term_ar: "أبل تالك",
+                term_en: "AppleTalk",
+                term_fr: "AppleTalk",
+                term_ko: "",
+                definition_ar: "هو بروتوكول لشبكة حواسيب \"أبل\"، صمم ليشتغل على شبكات \"لوكال تالك\"، لكنه اليوم يمكن أن يشتغل على \"ايثنت\" وحلقة العالم أو فرص الحلقة.",
+                definition_en: "Apple Computer's network protocol originally designed to run over LocalTalk networks, but can also run on Ethernet and Token Ring.",
+                definition_fr: "c'est un protocole de réseaux d'ordinateurs Apple, conçu d'origine pour fonctionner sur les réseaux « Local Talk » mais peut fonctionner actuellement sur Ethernet et Token Ring.",
+                definition_ko: ""
+            },
+            {
+                id: 2,
+                term_ar: "أخر دخل أول خارج",
+                term_en: "Last In First Out (LIFO)",
+                term_fr: "Last In First Out (LIFO)",
+                term_ko: "",
+                definition_ar: "\"ليفو\" هي وسيلة لمعالجة البيانات التي يتم تسجيل عناصرها في آخرها هي التي يتم إزالتها أولاً.",
+                definition_en: "A LIFO (Last In, First Out) is a data processing method in which the last items entered are the first to be removed.",
+                definition_fr: "LIFO est un procédé de traitement de données dans laquelle les éléments enregistrés en dernier sont les premiers à être enlevé.",
+                definition_ko: ""
+            },
+            {
+                id: 3,
+                term_ar: "آلة التعلم",
+                term_en: "Machine Learning",
+                term_fr: "Apprentissage automatique",
+                term_ko: "",
+                definition_ar: "آلة التعلم هي عملية تسمح للآلة بتحسين أدائها للتحليل والبحث التلقائي عن المعلومات.",
+                definition_en: "Machine learning is a process allowing the machine to improve its performance for analysis and/or to automatically search for information.",
+                definition_fr: "C'est un processus permettant à la machine d'améliorer ses performances, pour l'analyse et/ou pour la recherche automatique des informations.",
+                definition_ko: ""
+            },
+            {
+                id: 4,
+                term_ar: "معدات الاختبار الآلي",
+                term_en: "Automated Test Equipment (ATE)",
+                term_fr: "Equipement de test automatisé (ETA)",
+                term_ko: "",
+                definition_ar: "معدات الاختبار الآلي يتمثل في سيطرة الحاسوب على المعدات التي تختبر الأجهزة الإلكترونية للحصول على الوظائف والأداء.",
+                definition_en: "Automated test equipment (ATE) is computer-controlled equipment that tests electronic devices for functionality and performance.",
+                definition_fr: "L'équipement de test automatisé (ETA) est contrôlé par ordinateur qui permet de tester l'équipement des appareils pour la fonctionnalité et la performance.",
+                definition_ko: ""
+            },
+            {
+                id: 5,
+                term_ar: "آلية تحديد الوصول",
+                term_en: "Java Sandbox",
+                term_fr: "Quarantaine Java",
+                term_ko: "",
+                definition_ar: "مقياس الأمن في بيئة تطوير جافا والتطبيقات المصغرة بلغة الجافا هي مجموعة من القواعد التي يتم استخدامها عند إنشاء البرامج الصغيرة التي يمنع فيها بعض الوظائف.",
+                definition_en: "A security measure in the Java development environment that prevents certain functions when an applet is sent as part of a Web page.",
+                definition_fr: "Une mesure de sécurité dans l'environnement de développement Java qui empêche certaines fonctions lorsque l'applet est envoyé en tant que partie d'une page Web.",
+                definition_ko: ""
+            },
+            {
+                id: 6,
+                term_ar: "آلية النفاذ (مفعل)",
+                term_en: "Access Mechanism / Actuator",
+                term_fr: "Mécanisme d'accès / Positionneur",
+                term_ko: "",
+                definition_ar: "آلية لتحديد مواقع القراءة أو الكتابة على المسارات المطلوبة لقرص مغناطيسي.",
+                definition_en: "The mechanism of positioning reading or writing heads onto the required tracks of a magnetic disk.",
+                definition_fr: "Le mécanisme de positionnement des têtes de lecture ou d'écriture sur les pistes requises d'un disque magnétique.",
+                definition_ko: ""
+            },
+            {
+                id: 7,
+                term_ar: "إقلاع (ابتداء)",
+                term_en: "Boot",
+                term_fr: "Lancer / Démarrer",
+                term_ko: "",
+                definition_ar: "يتم استخدام \"الإقلاع\" لوصف العملية التي يقوم بها الكمبيوتر عند تشغيله، حيث يقوم بتحميل نظام التشغيل.",
+                definition_en: "The process taken by the computer when turned on that loads the operating system and prepares the system for use.",
+                definition_fr: "Le processus suivi par l'ordinateur lorsqu'il est sous tension qui charge le système d'exploitation et prépare le système pour être utilisé.",
+                definition_ko: ""
+            },
+            {
+                id: 8,
+                term_ar: "بت (رقم ثنائي)",
+                term_en: "Bit",
+                term_fr: "Bit",
+                term_ko: "",
+                definition_ar: "هي أصغر وحدة بيانات في الحاسوب، قيمة البتة إما 0 أو 1.",
+                definition_en: "A bit (binary digit) is the smallest unit of data in a computer, with a value of either 0 or 1.",
+                definition_fr: "Un bit (contraction de chiffre binaire) est la capacité de base de l'information en informatique, un bit peut avoir la valeur 1 ou 0.",
+                definition_ko: ""
+            },
+            {
+                id: 9,
+                term_ar: "بيت التحكم",
+                term_en: "Check Bit",
+                term_fr: "Bit de contrôle",
+                term_ko: "",
+                definition_ar: "هي بتة تستخدم في إجراء يتم خلاله الكشف عن الخطأ لكل مجموعة من البتات.",
+                definition_en: "A bit that is used in an error detection procedure to check for errors in data transmission.",
+                definition_fr: "Un bit qui est utilisé dans une procédure de détection d'erreurs pour vérifier l'exactitude des données transmises.",
+                definition_ko: ""
+            },
+            {
+                id: 10,
+                term_ar: "بيت التكافؤ",
+                term_en: "Parity Bit",
+                term_fr: "Bit de parité",
+                term_ko: "",
+                definition_ar: "يتم حساب \"بيت التكافؤ\" من حرف منقول، ويكون فردياً أو زوجياً حسب عدد البتات الواردة في الجرف.",
+                definition_en: "The parity bit is calculated from a transmitted character, it will be odd or even depending on the number of bits contained in the character.",
+                definition_fr: "Le bit de parité est calculé à partir d'un caractère transmis. Il sera pair ou impair en fonction du nombre de bits pairs contenus dans le caractère.",
+                definition_ko: ""
+            },
+            {
+                id: 11,
+                term_ar: "بيت الحالة",
+                term_en: "Status Bit",
+                term_fr: "Bit d'état",
+                term_ko: "",
+                definition_ar: "هي البتة التي تتحكم في وضعية المنظم للآلة الذاتية.",
+                definition_en: "A bit that controls the condition or state of the PLC sequencer.",
+                definition_fr: "Un bit qui contrôle la condition ou l'état de l'automate séquenceur.",
+                definition_ko: ""
+            },
+            {
+                id: 12,
+                term_ar: "بيت ذو الوزن الخفيف",
+                term_en: "Least Significant Bit (LSB)",
+                term_fr: "Bit de poids faible",
+                term_ko: "",
+                definition_ar: "هي البتة الأقل أهمية من سلسلة من الأرقام الثنائية، وتقع في الطرف الأيمن من السلسلة.",
+                definition_en: "The least significant bit is the lowest bit in a series of numbers in binary, located at the far right of a string.",
+                definition_fr: "Le bit le moins significatif est le bit le plus bas dans une série de nombres en binaire, situé à l'extrémité droite d'une chaîne.",
+                definition_ko: ""
+            },
+            {
+                id: 13,
+                term_ar: "بيت العلامة",
+                term_en: "Sign Bit",
+                term_fr: "Bit de signe",
+                term_ko: "",
+                definition_ar: "هي البتة الأكثر أهمية من رقم ثنائي تستخدم للإشارة إلى ما إذا كان الرقم موجباً أم سالباً.",
+                definition_en: "The most significant bit of a binary number that is used to indicate whether the number is positive or negative.",
+                definition_fr: "Le bit le plus significatif d'un nombre binaire qui est utilisé pour indiquer si le nombre est positif ou négatif.",
+                definition_ko: ""
+            },
+            {
+                id: 14,
+                term_ar: "بيت في الثانية",
+                term_en: "Bits Per Second (bps)",
+                term_fr: "Bits par seconde (bps)",
+                term_ko: "",
+                definition_ar: "هو مقياس لسرعة نقل البيانات، ويعبر عن عدد البتات المنقولة في الثانية الواحدة.",
+                definition_en: "Bits per second (bps) is a measure used to show the average rate at which data is transferred between a computer and a data transmission system.",
+                definition_fr: "Bits par seconde (bps) est une mesure utilisée pour montrer la vitesse moyenne à laquelle les données sont transférées entre un ordinateur et un système de transmission de données.",
+                definition_ko: ""
+            },
+            {
+                id: 15,
+                term_ar: "بروتوكول",
+                term_en: "Protocol",
+                term_fr: "Protocole",
+                term_ko: "",
+                definition_ar: "عندما تتصل أجهزة الكمبيوتر مع بعضها البعض، يجب أن تكون هناك مجموعة مشتركة من القواعد والإرشادات التي يتبعها كل كمبيوتر لتتمكينه من التواصل وتبادل البيانات.",
+                definition_en: "When computers communicate with each other, there must be a common set of rules and instructions that each computer follows to communicate and exchange data.",
+                definition_fr: "Quand les ordinateurs communiquent entre eux, doit y avoir un ensemble commun de règles et instructions que chaque ordinateur suit pour pouvoir communiquer et échanger des données.",
+                definition_ko: ""
+            }
+        ];
+
+        // عناصر DOM
+        const searchInput = document.getElementById('searchInput');
+        const termsList = document.getElementById('termsList');
+        const contentArea = document.getElementById('contentArea');
+
+        let currentTerm = null;
+
+        // بناء قائمة المصطلحات
+        function buildTermsList() {
+            termsList.innerHTML = '';
+            termsData.forEach(term => {
+                const li = document.createElement('li');
+                li.textContent = term.term_ar;
+                li.onclick = () => selectTerm(term);
+                termsList.appendChild(li);
+            });
+        }
+
+        // عرض تفاصيل المصطلح
+        function displayTerm(term) {
+            if (!term) return;
+
+            const html = `
+                <div class="term-card">
+                    <div class="term-title">
+                        📖 ${term.term_ar}
+                    </div>
+                    <div class="translations">
+                        <div class="trans-item">
+                            <div class="trans-label">🇸🇰 한국어 / Korean</div>
+                            <div class="trans-value">${term.term_ko || '<span style="color: #adb5bd;">(يُضاف لاحقًا)</span>'}</div>
+                        </div>
+                        <div class="trans-item">
+                            <div class="trans-label">🇬🇧 English</div>
+                            <div class="trans-value">${term.term_en}</div>
+                        </div>
+                        <div class="trans-item">
+                            <div class="trans-label">🇫🇷 Français</div>
+                            <div class="trans-value">${term.term_fr}</div>
+                        </div>
+                    </div>
+                    <div class="definitions">
+                        <div class="def-title">📝 التفاسير</div>
+                        <div class="def-grid">
+                            <div class="def-item">
+                                <div class="def-lang">🇸🇰 التفسير بالكورية</div>
+                                <div class="def-text">${term.definition_ko || '<span style="color: #adb5bd;">(يُضاف لاحقًا)</span>'}</div>
+                            </div>
+                            <div class="def-item">
+                                <div class="def-lang">🇬🇧 التفسير بالإنجليزية</div>
+                                <div class="def-text">${term.definition_en}</div>
+                            </div>
+                            <div class="def-item">
+                                <div class="def-lang">🇫🇷 التفسير بالفرنسية</div>
+                                <div class="def-text">${term.definition_fr}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            contentArea.innerHTML = html;
+        }
+
+        // اختيار مصطلح
+        function selectTerm(term) {
+            currentTerm = term;
+            displayTerm(term);
+            
+            const items = termsList.querySelectorAll('li');
+            items.forEach(item => {
+                if (item.textContent === term.term_ar) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        // البحث
+        function searchTerms() {
+            const query = searchInput.value.trim().toLowerCase();
+            if (query === '') {
+                buildTermsList();
+                if (currentTerm) selectTerm(currentTerm);
+                return;
+            }
+
+            const filtered = termsData.filter(term => 
+                term.term_ar.toLowerCase().includes(query) ||
+                term.term_en.toLowerCase().includes(query) ||
+                term.term_fr.toLowerCase().includes(query)
+            );
+
+            termsList.innerHTML = '';
+            filtered.forEach(term => {
+                const li = document.createElement('li');
+                li.textContent = term.term_ar;
+                li.onclick = () => selectTerm(term);
+                termsList.appendChild(li);
+            });
+
+            if (filtered.length > 0) {
+                selectTerm(filtered[0]);
+            } else {
+                contentArea.innerHTML = '<div class="no-results">🔍 لا توجد نتائج مطابقة للبحث</div>';
+            }
+        }
+
+        // الأحداث
+        searchInput.addEventListener('input', searchTerms);
+
+        // التحميل الأولي
+        buildTermsList();
+        if (termsData.length > 0) {
+            selectTerm(termsData[0]);
+        }
+    </script>
+</body>
+</html>
