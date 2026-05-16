@@ -1,0 +1,12 @@
+yaml
+name: Premier test
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Vérification simple
+        run: echo "✅ Le workflow fonctionne"
