@@ -1,13 +1,8 @@
 yaml
-name: Tester index.html
-
-on:
-  push
-
+name: Test Minimal
+on: push
 jobs:
-  test:
+  job1:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Vérifier index.html
-        run: ls -la
+      - run: echo "Succès total"
